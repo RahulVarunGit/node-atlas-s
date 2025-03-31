@@ -133,6 +133,6 @@ app.get('/pairings/:group', async (req, res) => {
 
 app.listen(PORT, () => {
 
-    console.log("Server is running");
+    console.log("Server is running on port ", PORT);
 
 });
