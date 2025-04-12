@@ -105,7 +105,7 @@ async function connectToDatabasePairings() {
 }
 
 app.get('/', (req, res) => {
-    res.send("Hi");
+    res.send("Hi2");
 });
 
 app.get('/data', async (req, res) => {
