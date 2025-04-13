@@ -2,6 +2,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
+//   ********************************************************************************************************************
+//                             Need to change port and cors for running in local
+//   ********************************************************************************************************************
+
 ///*********************************  4000 for local : 3000 for lightsail
 const PORT = process.env.PORT || 3000;
 
@@ -72,17 +76,17 @@ async function writeFunction() {
 // });
 
 // Option 1 without CORS
-app.use((req, res, next) => {
-    const origin = req.headers.origin; // Get the Origin header from the request
-    if (allowedOrigins.includes(origin)) {
-        res.setHeader('Access-Control-Allow-Origin', origin); // Set the matching origin
-    }
-    //res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-    next();
-});
+//app.use((req, res, next) => {
+//    const origin = req.headers.origin; // Get the Origin header from the request
+//    if (allowedOrigins.includes(origin)) {
+//        res.setHeader('Access-Control-Allow-Origin', origin); // Set the matching origin
+//    }
+//    //res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+//    next();
+//});
 
 // Option 2 with CORS
-//app.use(cors());
+app.use(cors());
 
 async function connectToDatabase() {
     await client.connect();
