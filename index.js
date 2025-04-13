@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
 ///*********************************  4000 for local : 3000 for lightsail
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 const allowedOrigins = ['http://localhost:3000', 'https://ourmcia.org', 'https://chess.ourmcia.org', 'http://10.0.0.42:3000'];
 
@@ -51,7 +51,7 @@ async function writeFunction() {
 */
 
 
-app.use(cors());
+//app.use(cors());
 //app.use(cors({ origin: 'https://www.ourmcia.org' }));
 
 //app.use(cors({ origin: '*' }));
@@ -72,14 +72,17 @@ app.use(cors());
 // });
 
 // Option 1 without CORS
-// app.use((req, res, next) => {
-//     const origin = req.headers.origin; // Get the Origin header from the request
-//     if (allowedOrigins.includes(origin)) {
-//         res.setHeader('Access-Control-Allow-Origin', origin); // Set the matching origin
-//     }
-//     //res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-//     next();
-// });
+app.use((req, res, next) => {
+    const origin = req.headers.origin; // Get the Origin header from the request
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin); // Set the matching origin
+    }
+    //res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    next();
+});
+
+// Option 2 with CORS
+//app.use(cors());
 
 async function connectToDatabase() {
     await client.connect();
@@ -117,9 +120,32 @@ app.get('/playerDetails/:group', async (req, res) => {
 
     console.log("************************", req.params.group);
     const collection = await connectToDatabasePlayerDetails();
-    const data = await collection.find({ Group: req.params.group }).sort({ Score: -1, Rating: -1, Name: -1 }).toArray();
+    //const data = await collection.find({ Group: req.params.group }).sort({ Score: -1, Rating: -1, Name: -1 }).toArray();
+    const roundData = await collection.find({ Group: req.params.group }).sort({ Round: -1, Name: 1 }).limit(1).toArray();
+
+    const data = await collection.find({ Group: req.params.group, Round: roundData[0].Round }).sort({ Standing: 1 }).toArray();
     res.json(data);
 });
+
+app.get('/playerDetailsRound/:group', async (req, res) => {
+
+    console.log("************************", req.params.group);
+    const collection = await connectToDatabasePlayerDetails();
+    const data = await collection.find({ Group: req.params.group }).sort({ Round: -1, Name: 1 }).limit(1).toArray();
+    console.log(data[0].Round);
+    res.json(data);
+});
+
+app.get('/playerNames/:group', async (req, res) => {
+
+    console.log("************************", req.params.group);
+    const collection = await connectToDatabasePlayerDetails();
+    const roundData = await collection.find({ Group: req.params.group }).sort({ Round: -1, Name: 1 }).limit(1).toArray();
+
+    const data = await collection.find({ Group: req.params.group, Round: roundData[0].Round }).sort({ Name: 1 }).toArray();
+    res.json(data);
+});
+
 app.get('/pairings/:group', async (req, res) => {
     const collection = await connectToDatabasePairings();
     const data = await collection.find({ Group: req.params.group }).toArray();
