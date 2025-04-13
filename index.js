@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
 ///*********************************  4000 for local : 3000 for lightsail
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3000;
 
 const allowedOrigins = ['http://localhost:3000', 'https://ourmcia.org', 'https://chess.ourmcia.org', 'http://10.0.0.42:3000'];
 
